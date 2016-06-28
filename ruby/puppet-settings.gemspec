@@ -12,6 +12,9 @@ Gem::Specification.new do |s|
   s.license       = 'Apache License, v2'
   s.required_ruby_version = '>=1.9.0'
 
+  # TODO: add HOCON dependency once HC-79 is merged and released; for now you need
+  #  to add that branch to your RUBYLIB.
+
   # Testing dependencies
   s.add_development_dependency 'bundler', '~> 1.5'
   s.add_development_dependency 'rspec', '~> 2.14'
