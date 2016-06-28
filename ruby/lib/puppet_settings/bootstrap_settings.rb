@@ -11,20 +11,20 @@ class PuppetSettings::BootstrapSettings
 
   private
 
-  BOOTSTRAP_SETTINGS = [:conf_dir, :code_dir, :var_dir, :run_dir, :log_dir]
+  BOOTSTRAP_SETTINGS = [:confdir, :codedir, :vardir, :rundir, :logdir]
 
   BOOTSTRAP_DEFAULTS = {
       :unix => {
-          :root => { :conf_dir => "/etc/puppetlabs/puppet",
-                     :code_dir => "/etc/puppetlabs/code",
-                     :var_dir => "/opt/puppetlabs/puppet/cache",
-                     :run_dir => "/var/run/puppetlabs",
-                     :log_dir => "/var/log/puppetlabs/puppet"},
-          :user => { :conf_dir => "~/.puppetlabs/etc/puppet",
-                     :code_dir => "~/.puppetlabs/etc/code",
-                     :var_dir => "~/.puppetlabs/opt/puppet/cache",
-                     :run_dir => "~/.puppetlabs/var/run",
-                     :log_dir => "~/.puppetlabs/var/log"}
+          :root => { :confdir => "/etc/puppetlabs/puppet",
+                     :codedir => "/etc/puppetlabs/code",
+                     :vardir => "/opt/puppetlabs/puppet/cache",
+                     :rundir => "/var/run/puppetlabs",
+                     :logdir => "/var/log/puppetlabs/puppet"},
+          :user => { :confdir => "~/.puppetlabs/etc/puppet",
+                     :codedir => "~/.puppetlabs/etc/code",
+                     :vardir => "~/.puppetlabs/opt/puppet/cache",
+                     :rundir => "~/.puppetlabs/var/run",
+                     :logdir => "~/.puppetlabs/var/log"}
       },
       :windows => {
           # TODO

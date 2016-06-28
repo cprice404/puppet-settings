@@ -11,6 +11,6 @@ class PuppetSettings
     unless RUN_MODES.include?(run_mode)
       raise PuppetSettings::PuppetSettingsError.new("Unrecognized run mode '#{run_mode}'; valid run modes are ':#{RUN_MODES.join("', ':")}'")
     end
-    PuppetSettings::BootstrapSettings.initialize_bootstrap_settings()
+    PuppetSettings::BootstrapSettings.initialize_bootstrap_settings().merge(overrides)
   end
 end

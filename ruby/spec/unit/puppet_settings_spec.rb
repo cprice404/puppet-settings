@@ -26,11 +26,11 @@ describe PuppetSettings do
         PuppetSettings.initialize_settings({}, :master).select do |key, value|
           BOOTSTRAP_SETTINGS.include? key
         end
-      ).to eq({:conf_dir => "~/.puppetlabs/etc/puppet",
-               :code_dir => "~/.puppetlabs/etc/code",
-               :var_dir => "~/.puppetlabs/opt/puppet/cache",
-               :run_dir => "~/.puppetlabs/var/run",
-               :log_dir => "~/.puppetlabs/var/log"})
+      ).to eq({:confdir => "~/.puppetlabs/etc/puppet",
+               :codedir => "~/.puppetlabs/etc/code",
+               :vardir => "~/.puppetlabs/opt/puppet/cache",
+               :rundir => "~/.puppetlabs/var/run",
+               :logdir => "~/.puppetlabs/var/log"})
     end
 
     it "uses system directories for root user" do
@@ -39,16 +39,32 @@ describe PuppetSettings do
           PuppetSettings.initialize_settings({}, :master).select do |key, value|
             BOOTSTRAP_SETTINGS.include? key
           end
-      ).to eq({:conf_dir => "/etc/puppetlabs/puppet",
-               :code_dir => "/etc/puppetlabs/code",
-               :var_dir => "/opt/puppetlabs/puppet/cache",
-               :run_dir => "/var/run/puppetlabs",
-               :log_dir => "/var/log/puppetlabs/puppet"})
+      ).to eq({:confdir => "/etc/puppetlabs/puppet",
+               :codedir => "/etc/puppetlabs/code",
+               :vardir => "/opt/puppetlabs/puppet/cache",
+               :rundir => "/var/run/puppetlabs",
+               :logdir => "/var/log/puppetlabs/puppet"})
     end
-
 
     it "TODO: works on windows" do
       skip("Windows support not yet implemented")
+    end
+
+    it "overrides defaults if overrides are passed in" do
+      expect(
+          PuppetSettings.initialize_settings(
+              {:confdir => "/foo/conf",
+               :codedir => "/foo/code",
+               :vardir => "/foo/var",
+               :rundir => "/foo/run",
+               :logdir => "/foo/log"}, :master).select do |key, value|
+            BOOTSTRAP_SETTINGS.include? key
+          end
+      ).to eq({:confdir => "/foo/conf",
+               :codedir => "/foo/code",
+               :vardir => "/foo/var",
+               :rundir => "/foo/run",
+               :logdir => "/foo/log"})
     end
   end
 end
