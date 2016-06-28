@@ -2,10 +2,10 @@
 
 require 'puppet_settings'
 require 'puppet_settings/puppet_settings_error'
-require 'puppet_settings/bootstrap_settings'
+require 'puppet_settings/impl/bootstrap_settings'
 
 PuppetSettingsError = PuppetSettings::PuppetSettingsError
-BOOTSTRAP_SETTINGS = PuppetSettings::BootstrapSettings::BOOTSTRAP_SETTINGS
+BOOTSTRAP_SETTINGS = PuppetSettings::Impl::BootstrapSettings::BOOTSTRAP_SETTINGS
 
 describe PuppetSettings do
   context "run_mode" do
@@ -21,12 +21,14 @@ describe PuppetSettings do
 
   context "bootstrap settings" do
     it "defaults to directories under ~ for non-root users" do
-      allow(PuppetSettings::BootstrapSettings).to receive(:is_root?).and_return(false)
+      allow(PuppetSettings::Impl::BootstrapSettings).to receive(:is_root?).and_return(false)
       expect(
         PuppetSettings.initialize_settings({}, :master).select do |key, value|
           BOOTSTRAP_SETTINGS.include? key
         end
       ).to eq({:confdir => "~/.puppetlabs/etc/puppet",
+               :config_file_name => "puppet.conf",
+               :config => "~/.puppetlabs/etc/puppet/puppet.conf",
                :codedir => "~/.puppetlabs/etc/code",
                :vardir => "~/.puppetlabs/opt/puppet/cache",
                :rundir => "~/.puppetlabs/var/run",
@@ -34,12 +36,14 @@ describe PuppetSettings do
     end
 
     it "uses system directories for root user" do
-      allow(PuppetSettings::BootstrapSettings).to receive(:is_root?).and_return(true)
+      allow(PuppetSettings::Impl::BootstrapSettings).to receive(:is_root?).and_return(true)
       expect(
           PuppetSettings.initialize_settings({}, :master).select do |key, value|
             BOOTSTRAP_SETTINGS.include? key
           end
       ).to eq({:confdir => "/etc/puppetlabs/puppet",
+               :config_file_name => "puppet.conf",
+               :config => "/etc/puppetlabs/puppet/puppet.conf",
                :codedir => "/etc/puppetlabs/code",
                :vardir => "/opt/puppetlabs/puppet/cache",
                :rundir => "/var/run/puppetlabs",
@@ -54,6 +58,7 @@ describe PuppetSettings do
       expect(
           PuppetSettings.initialize_settings(
               {:confdir => "/foo/conf",
+               :config_file_name => "puppetfoo.conf",
                :codedir => "/foo/code",
                :vardir => "/foo/var",
                :rundir => "/foo/run",
@@ -61,6 +66,8 @@ describe PuppetSettings do
             BOOTSTRAP_SETTINGS.include? key
           end
       ).to eq({:confdir => "/foo/conf",
+               :config_file_name => "puppetfoo.conf",
+               :config => "/foo/conf/puppetfoo.conf",
                :codedir => "/foo/code",
                :vardir => "/foo/var",
                :rundir => "/foo/run",

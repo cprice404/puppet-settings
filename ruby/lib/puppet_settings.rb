@@ -3,7 +3,7 @@
 class PuppetSettings
   # these requires have to be in here to prevent circular dependencies :(
   require 'puppet_settings/puppet_settings_error'
-  require 'puppet_settings/bootstrap_settings'
+  require 'puppet_settings/impl/bootstrap_settings'
 
   RUN_MODES = [:master, :agent, :user]
 
@@ -11,6 +11,6 @@ class PuppetSettings
     unless RUN_MODES.include?(run_mode)
       raise PuppetSettings::PuppetSettingsError.new("Unrecognized run mode '#{run_mode}'; valid run modes are ':#{RUN_MODES.join("', ':")}'")
     end
-    PuppetSettings::BootstrapSettings.initialize_bootstrap_settings().merge(overrides)
+    PuppetSettings::Impl::BootstrapSettings.initialize_bootstrap_settings(overrides)
   end
 end
