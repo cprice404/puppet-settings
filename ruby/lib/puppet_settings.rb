@@ -1,8 +1,9 @@
 # encoding: utf-8
 
 class PuppetSettings
-  # this require has to be here to prevent a circular dependency :(
+  # these requires have to be in here to prevent circular dependencies :(
   require 'puppet_settings/puppet_settings_error'
+  require 'puppet_settings/bootstrap_settings'
 
   RUN_MODES = [:master, :agent, :user]
 
@@ -10,5 +11,6 @@ class PuppetSettings
     unless RUN_MODES.include?(run_mode)
       raise PuppetSettings::PuppetSettingsError.new("Unrecognized run mode '#{run_mode}'; valid run modes are ':#{RUN_MODES.join("', ':")}'")
     end
+    PuppetSettings::BootstrapSettings.initialize_bootstrap_settings()
   end
 end
