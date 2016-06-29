@@ -2,6 +2,7 @@
 
 require 'puppet_settings'
 require 'puppet_settings/impl'
+require 'puppet_settings/impl/utils'
 require 'hocon/config_factory'
 require 'hocon/config_resolve_options'
 require 'hocon/config_value_factory'
@@ -26,7 +27,7 @@ class PuppetSettings::Impl::BootstrapSettings
     # now we resolve the config
     conf = Hocon::ConfigFactory.load_from_config(
         conf, Hocon::ConfigResolveOptions.defaults)
-    symbolize_keys!(conf.root.unwrapped)
+    PuppetSettings::Impl::Utils.symbolize_keys!(conf.root.unwrapped)
   end
 
   private
@@ -37,12 +38,6 @@ class PuppetSettings::Impl::BootstrapSettings
   BOOTSTRAP_SETTINGS = [:confdir, :config_file_name, :config,
                         :codedir, :vardir, :rundir, :logdir]
 
-  def self.symbolize_keys!(h)
-    h.keys.each do |key|
-      h[key.to_sym] = h.delete(key)
-    end
-    h
-  end
 
   def self.is_windows?()
     # TODO: implement

@@ -7,4 +7,10 @@ class PuppetSettings::PuppetSettingsError < StandardError
     super(message)
     @cause = cause
   end
+
+  class ParseError < PuppetSettings::PuppetSettingsError
+    def initialize(message, file, line, cause = nil)
+      super("#{message}: file: #{file}, line: #{line}", cause)
+    end
+  end
 end

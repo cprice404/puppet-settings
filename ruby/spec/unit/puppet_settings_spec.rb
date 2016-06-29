@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+require 'spec_helper'
 require 'puppet_settings'
 require 'puppet_settings/puppet_settings_error'
 require 'puppet_settings/impl/bootstrap_settings'
@@ -23,7 +24,7 @@ describe PuppetSettings do
     it "defaults to directories under ~ for non-root users" do
       allow(PuppetSettings::Impl::BootstrapSettings).to receive(:is_root?).and_return(false)
       expect(
-        PuppetSettings.initialize_settings({}, :master).select do |key, value|
+        PuppetSettings.initialize_settings({}).select do |key, value|
           BOOTSTRAP_SETTINGS.include? key
         end
       ).to eq({:confdir => "~/.puppetlabs/etc/puppet",
@@ -38,7 +39,7 @@ describe PuppetSettings do
     it "uses system directories for root user" do
       allow(PuppetSettings::Impl::BootstrapSettings).to receive(:is_root?).and_return(true)
       expect(
-          PuppetSettings.initialize_settings({}, :master).select do |key, value|
+          PuppetSettings.initialize_settings({}).select do |key, value|
             BOOTSTRAP_SETTINGS.include? key
           end
       ).to eq({:confdir => "/etc/puppetlabs/puppet",
@@ -53,7 +54,9 @@ describe PuppetSettings do
     it "TODO: works on windows" do
       skip("Windows support not yet implemented")
     end
+  end
 
+  context "bootstrap settings overrides" do
     it "overrides defaults if overrides are passed in" do
       expect(
           PuppetSettings.initialize_settings(
@@ -62,7 +65,7 @@ describe PuppetSettings do
                :codedir => "/foo/code",
                :vardir => "/foo/var",
                :rundir => "/foo/run",
-               :logdir => "/foo/log"}, :master).select do |key, value|
+               :logdir => "/foo/log"}).select do |key, value|
             BOOTSTRAP_SETTINGS.include? key
           end
       ).to eq({:confdir => "/foo/conf",
@@ -74,5 +77,30 @@ describe PuppetSettings do
                :logdir => "/foo/log"})
     end
   end
+
+  context "config file paths and formats" do
+    context "hocon config files" do
+      it "parses file with default name" do
+        expect(
+            PuppetSettings.initialize_settings({:confdir => fixture_path("hocon")})[:masterport]
+        ).to eq(9140)
+      end
+      it "parses file with custom name" do
+        expect(
+            PuppetSettings.initialize_settings({:confdir => fixture_path("hocon"),
+                                                :config_file_name => "othername.conf"})[:masterport]
+        ).to eq(9140)
+      end
+    end
+
+    context "ini config files" do
+      it "parses file with default name" do
+        expect(
+            PuppetSettings.initialize_settings({:confdir => fixture_path("ini")})[:masterport]
+        ).to eq(9140)
+      end
+    end
+  end
+
 end
 
